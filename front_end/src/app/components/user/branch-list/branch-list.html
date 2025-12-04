@@ -1,0 +1,21 @@
+<div class="branch-container">
+  <div class="logo">
+    <img src="assets/logo.png" alt="شعار المطعم" />
+  </div>
+
+  <h2 class="title">اختر الفرع</h2>
+
+  <div class="branches">
+    <button
+      *ngFor="let branch of branches"
+      class="branch-button"
+      (click)="goToBranchDetails(branch.slug)"
+    >
+    {{ branch.name }}
+    </button>
+  </div>
+
+  <div class="plate">
+    <img src="assets/food.png" alt="وجبة أرز ودجاج" />
+  </div>
+</div>

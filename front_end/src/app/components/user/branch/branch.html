@@ -1,0 +1,60 @@
+<body>
+ <div class="container" *ngIf="branch">
+  <div class="logo">
+    <img src="assets/logo.png" alt="شعار المطعم">
+  </div>
+  <div class="buttons">
+ 
+    <a *ngIf="branch.phone" href="tel:{{branch.phone}}" class="btn" (click)="trackClick('phone')">
+  <img src="assets/phone-call.png" alt="اتصال" class="icon"> اتصال 
+</a>
+
+<a *ngIf="branch.whatsapp" href="https://wa.me/{{branch.whatsapp}}" class="btn" (click)="trackClick('whatsapp')">
+ <img src="assets/whatsapp.png" alt="واتساب" class="icon">  مراسلة بالواتساب 
+</a>
+
+
+ <ng-container *ngFor="let map of branch.google_Map; let i = index">
+  <a [href]="map"
+     class="btn"
+     target="_blank"
+     (click)="trackClick('google_Map', i === 1)">
+     
+     <!-- لو عدد الخرائط أكتر من 1 -->
+     <ng-container *ngIf="branch.google_Map.length > 1">
+       <img src="assets/icons8-google-maps-48.png" alt="جوجل ماب" class="icon">
+       توجه جوجل ماب {{ i + 1 }}
+     </ng-container>
+
+     <!-- لو فيه خريطة واحدة بس -->
+     <ng-container *ngIf="branch.google_Map.length === 1">
+       <img src="assets/icons8-google-maps-48.png" alt="جوجل ماب" class="icon">
+       توجه جوجل ماب
+     </ng-container>
+  </a>
+</ng-container>
+
+  <a *ngIf="branch.instagram" href="{{branch.instagram}}" class="btn" (click)="trackClick('instagram')">
+<img src="assets/icons8-instagram-48.png" alt="انستجرام" class="icon">   تابعنا على انستجرام 
+</a>
+    <a *ngIf="branch.facebook" href="{{branch.facebook}}" class="btn" (click)="trackClick('facebook')">
+<img src="assets/facebook.png" alt="فيسبوك" class="icon">   تابعنا على الفيسبوك 
+</a>
+
+   <a *ngIf="branch.snapchat" href="{{branch.snapchat}}" class="btn" (click)="trackClick('snapchat')">
+ <img src="assets/snapshat.png" alt="سناب شات" class="icon">  تابعنا على سناب شات  
+</a>
+<a *ngIf="branch?.menu" class="btn" (click)="trackClick('menu')" [href]="branch.menu | safeUrl" target="_blank">    
+    <i class="fas fa-book"></i>  قائمة الطعام
+    </a>
+  </div>
+
+
+  
+ 
+  <!-- <footer>© جميع الحقوق محفوظة 2025</footer> -->
+</div>
+</body>
+
+
+ 

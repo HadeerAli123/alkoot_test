@@ -1,0 +1,30 @@
+[07-Aug-2025 06:06:24 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
+[07-Aug-2025 06:06:24 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
+[07-Aug-2025 06:06:26 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
+[07-Aug-2025 06:11:47 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
+[07-Aug-2025 06:11:47 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
+[07-Aug-2025 06:11:49 UTC] PHP Fatal error:  Uncaught BadMethodCallException: Method Illuminate\Foundation\Application::handleCommand does not exist. in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112
+Stack trace:
+#0 /home/alkoot/public_html/dashboard/artisan(16): Illuminate\Foundation\Application->__call('handleCommand', Array)
+#1 {main}
+  thrown in /home/alkoot/public_html/dashboard/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php on line 112
