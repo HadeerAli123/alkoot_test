@@ -89,6 +89,13 @@ class CategoryRepository implements CategoryInterface
                     $social->link = $request->phone;
                     $social->save();
                 }
+                if ($request->has('tiktok')) {
+                    $social = new SocialMedia();
+                    $social->cat_id = $new->id;
+                    $social->type = "tiktok";
+                    $social->link = $request->tiktok;
+                    $social->save();
+                }
                 if ($request->hasFile('menu')) {
                     $social = new SocialMedia();
                     $social->cat_id = $new->id;
@@ -139,6 +146,12 @@ class CategoryRepository implements CategoryInterface
                SocialMedia::where('cat_id', $category_id)
                             ->where('type', 'phone')
                             ->update(['link' => $request->phone]);
+               
+            }
+            if ($request->has('tiktok')) {
+               SocialMedia::where('cat_id', $category_id)
+                            ->where('type', 'tiktok')
+                            ->update(['link' => $request->tiktok]);
                
             }
             if ($request->hasFile('menu')) {

@@ -166,6 +166,16 @@ table.dataTable tfoot td {
                                                 @enderror
                                             </div>
                                         </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-4">
+                                                <label for="tiktok" class="mb-2 black bold"> رابط تيك توك  </label>
+                                                <input type="text" class="theme-input-style @error('tiktok') is-invalid @enderror" name="tiktok" value="{{ old('tiktok') }}" placeholder="أدخل رابط تيك توك ">
+                                                <div class="invalid-feedback"></div>
+                                                @error('tiktok')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                         @if($theme_id == 2)
                                             <div class="col-lg-6">
@@ -549,6 +559,17 @@ table.dataTable tfoot td {
 
                                                         </div>
                                                     </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group mb-4">
+                                                            <label for="edit_name_{{$one->id}}" class="mb-2 black bold">
+                                                              رابط تيك توك   </label>
+                                                            <input type="text" class="theme-input-style"
+                                                                name="tiktok"
+                                                                value="{{ $one->socialMedia->where('type','tiktok')->first()?->link }}">
+                                                          <span class="error-text text-danger" id="tiktok_error_{{ $one->id }}"></span>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     @if($theme_id == 2)
                                                     <div class="col-lg-6">
                                                         <div class="form-group mb-4">

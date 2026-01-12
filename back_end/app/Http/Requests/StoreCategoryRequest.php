@@ -32,7 +32,7 @@ class StoreCategoryRequest extends FormRequest
             'instagram' => 'nullable|url|max:255',
             'google_Map' => 'nullable|url|max:255',
             'google_Map_2' => 'nullable|url|max:255',
-       
+          'tiktok' => 'nullable|url|max:255',
         ];
     }
 
@@ -60,7 +60,8 @@ class StoreCategoryRequest extends FormRequest
             'google_Map.regex' => 'رابط خرائط Google الأول يجب أن يكون رابطًا صالحًا لخرائط Google.',
             'google_Map_2.url' => 'رابط خرائط Google الثاني غير صالح.',
             'google_Map_2.regex' => 'رابط خرائط Google الثاني يجب أن يكون رابطًا صالحًا لخرائط Google.',
-     
+     'tiktok.url' => 'رابط  التيك توك  غير صالح.',
+            'tiktok.regex' => 'رابط التيك توك  يجب أن يكون رابطًا صالحًا لموقع tiktok.',
         ];
     }
 

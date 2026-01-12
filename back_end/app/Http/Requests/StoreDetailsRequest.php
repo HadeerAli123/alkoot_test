@@ -25,7 +25,7 @@ class StoreDetailsRequest extends FormRequest
             // 'product_id' => 'nullable|string|exists:products,id',
             'ads_id' => 'required|string|exists:ads,id',
             // 'date' => 'required|date',
-            'type' => 'required|string|max:255|in:whatsapp,phone,facebook,instagram,snapchat,linkedin,x,website,visit,menu,google_Map,google_Map_2',
+            'type' => 'required|string|max:255|in:whatsapp,phone,facebook,instagram,snapchat,linkedin,x,website,visit,menu,google_Map,google_Map_2 ,tiktok',
         ];
     }
 

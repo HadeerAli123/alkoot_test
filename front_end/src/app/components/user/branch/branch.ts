@@ -19,6 +19,8 @@ export class BranchComponent implements OnInit {
   adId: string | null = null;
   branchSlug: string | null = null; 
   currentAdSlug: string | null = null;
+    private specialBranches = ['gorgya', 'athrbygan'];
+
   constructor(
     private campaignService: CampaignService,
     private route: ActivatedRoute
@@ -38,12 +40,11 @@ loadBranch(currentAdSlug: string, branchSlug: string): void {
   this.campaignService.getAdDetails(currentAdSlug).subscribe({
     next: (data) => {
       if (data && data.branches) {
-        this.adId = data.id; // خزّني الـ adId من استجابة الـ API
-        this.branch = data.branches.find((b: any) => b.slug === branchSlug); // استخدمي slug بدل id
+        this.adId = data.id; 
+        this.branch = data.branches.find((b: any) => b.slug === branchSlug);
         if (this.branch) {
-          this.branchId = this.branch.id; // خزّني الـ branchId
+          this.branchId = this.branch.id;
           console.log('بيانات الفرع:', this.branch);
-          // استدعي trackVisit هنا بعد ما الـ branchId و adId بقوا جاهزين
           this.campaignService.trackVisit(this.branchId, this.adId, true);
         } else {
           console.warn('لم يتم العثور على الفرع المطلوب');
@@ -66,5 +67,8 @@ trackClick(type: string, isSecondMap: boolean = false): void {
       this.campaignService.trackClick(type, this.branchId, this.adId, true, false, isSecondMap); 
       console.log(`تم تسجيل نقرة على ${isSecondMap ? 'google_Map_2' : type} للفرع ${this.branchId} مع الإعلان ${this.adId}`);
     }
+  }
+    isSpecialBranch(): boolean {
+    return this.branch && this.specialBranches.includes(this.branch.slug);
   }
 }

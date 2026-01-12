@@ -17,7 +17,6 @@ export class CampaignService {
 
   private normalizeGoogleMap(google_map: any): string[] {
     if (!google_map) {
-      console.warn('google_map is null or undefined:', google_map); 
       return [];
     }
     if (Array.isArray(google_map)) {
@@ -156,6 +155,7 @@ export class CampaignService {
           instagram: branch.instagram,
           snapchat: branch.snapchat,
           phone: branch.phone,
+          tiktok:branch.tiktok,
           google_Map: this.normalizeGoogleMap(branch.google_Map),
               menu: branch.menu
               ? (branch.menu.startsWith('http') ? branch.menu : `${this.apiUrlValue}/${branch.menu}`)
@@ -275,6 +275,8 @@ export class CampaignService {
           instagram: branch.instagram,
           snapchat: branch.snapchat,
           phone: branch.phone,
+                    tiktok:branch.tiktok,
+
           google_Map: this.normalizeGoogleMap(branch.google_Map),
                    menu: branch.menu
             ? (branch.menu.startsWith('http') ? branch.menu : `${this.apiUrlValue}/${branch.menu}`)
@@ -459,6 +461,8 @@ export class CampaignService {
               instagram: branch.instagram,
               snapchat: branch.snapchat,
               phone: branch.phone,
+               tiktok:branch.tiktok,
+
               google_Map: this.normalizeGoogleMap(branch.google_Map), 
               menu: branch.menu ? (branch.menu.startsWith('http') ? branch.menu : `${this.apiUrlValue}/${branch.menu}`) : null,
             };
