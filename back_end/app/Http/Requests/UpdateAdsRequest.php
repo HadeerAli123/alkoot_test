@@ -45,6 +45,9 @@ class UpdateAdsRequest extends FormRequest
             'amount_per_day' => 'required|numeric|min:0',
             // 'product_ids' => 'required|array',
             // 'product_ids.*' => 'exists:products,id',
+
+                            'phone' => 'nullable|string|max:20', // خليها string بدل number
+
         ];
     }
 

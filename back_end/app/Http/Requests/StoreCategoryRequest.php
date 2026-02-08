@@ -29,10 +29,25 @@ class StoreCategoryRequest extends FormRequest
             'whatsapp' => 'required_with:whatsapp_country_code|numeric|digits_between:7,15',
             'phone_country_code' => 'required_with:phone|in:+966,+20,+971,+965,+964,+962,+963,+968,+973,+974',
             'phone' => 'required_with:phone_country_code|numeric|digits_between:7,15',
-            'instagram' => 'nullable|url|max:255',
-            'google_Map' => 'nullable|url|max:255',
-            'google_Map_2' => 'nullable|url|max:255',
-          'tiktok' => 'nullable|url|max:255',
+      'instagram' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?instagram\.com\/.+$/'
+    ],
+
+    'google_Map' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+$/'
+    ],
+
+    'google_Map_2' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+$/'
+    ],
+
+    'tiktok' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com)\/.+$/'
+    ],
         ];
     }
 

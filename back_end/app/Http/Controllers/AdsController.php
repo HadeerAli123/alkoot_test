@@ -46,23 +46,26 @@ class AdsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAdsRequest $request)
-    {
-        $data = $this->repo->store($request);
-        
-        return redirect()->to('qr-code/generate/'.$data->id);
+   
 
-        // return redirect()->back()->with('success','تم الاضافة بنجاح');
-
-        // $compact[1]['title'] =  "المشروعات";
-        // $compact[1]['url'] = route('companies.index');
-        // // $compact[2]['title'] = "الاعلانات";
-        // // $compact[2]['url'] = "javascript:void(0);";
-
-        // $compact["view"] = "ads.index";
-        // $data =  Ads::with('company')->where('company_id', $request->company_id)->get();
-        // return return_res($data, $compact, \App\Http\Resources\Api\AdsResource::class);
+// في الـ Controller
+public function store(StoreAdsRequest $request)
+{
+    $data = $this->repo->store($request);
+    
+    // التحقق إذا كان الطلب AJAX
+    if ($request->ajax() || $request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إضافة الإعلان بنجاح',
+            'redirect' => url('qr-code/generate/' . $data->id),
+            'data' => $data
+        ]);
     }
+    
+    // إذا كان طلب عادي (غير AJAX)
+    return redirect()->to('qr-code/generate/' . $data->id);
+}
 
     /**
      * Display the specified resource.
@@ -125,20 +128,20 @@ class AdsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAdsRequest $request,$id)
-    {
-
-        $this->repo->update($request,$id);
-        return redirect()->back()->with('success','تم التعديل بنجاح');
-        // $compact[1]['title'] =  "المشروعات";
-        // $compact[1]['url'] = route('companies.index');
-        // $compact[2]['title'] = "الاعلانات";
-        // $compact[2]['url'] = "javascript:void(0);";
-
-        // $compact["view"] = "ads.index";
-        // $data =  Ads::with('company')->where('company_id', $request->company_id)->get();
-        // return return_res($data, $compact, \App\Http\Resources\Api\AdsResource::class);
+    public function update(UpdateAdsRequest $request, $id)
+{
+    $this->repo->update($request, $id);
+    
+    if ($request->ajax() || $request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'تم التعديل بنجاح',
+            'redirect' => route('ads.index') // أو أي route تاني
+        ]);
     }
+    
+    return redirect()->back()->with('success', 'تم التعديل بنجاح');
+}
 
     /**
      * Remove the specified resource from storage.

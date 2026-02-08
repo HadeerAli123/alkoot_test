@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('ads_.update',$data->id)}}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('ads_.update',$data->id)}}" method="POST" enctype="multipart/form-data" id="edit_ads">
             @csrf
             @method('PUT')
             <div class="row">
@@ -8,6 +8,9 @@
                     <div class="form-group mb-4">
                         <label for="name" class="mb-2 black bold">اسم الحملة </label>
                         <input type="text" class="theme-input-style" id="name" name="name" value="{{ $data->name }}">
+                        @error('name')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -111,38 +114,20 @@
 
             <div class="d-flex justify-content-center pt-3" style="    padding-bottom: 10px;">
                 <button type="submit" class="btn btn-primary ml-3">تعديل</button>
+    <button type="button" class="btn btn-secondary" onclick="goBack()">إلغاء</button>
+
             </div>
         </form>
     </div>
 
 </div>
 
+
 <script>
-const startInput = document.getElementById('start_date');
-const endInput = document.getElementById('end_date');
-const output = document.getElementById('number_days');
-const total_amount = document.getElementById('total_amount');
-const amount_per_day = document.getElementById('amount_per_day');
-
-function calculateDateDiff() {
-    const start = new Date(startInput.value);
-    const end = new Date(endInput.value);
-    const perDayAmount = parseFloat(amount_per_day.value);
-
-    if (!isNaN(start) && !isNaN(end)) {
-        const diffTime = end - start;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        output.value = diffDays;
-        total_amount.value = (diffDays * perDayAmount);
-        // amountPerDay.value = parseFloat(amountPerDay.value).toFixed(3);
-        console.log(total_amount.value);
-    } else {
-        output.value = '';
+function goBack() {
+    if (confirm('هل أنت متأكد من إلغاء التعديلات؟')) {
+        window.history.back();
     }
 }
-
-startInput.addEventListener('change', calculateDateDiff);
-endInput.addEventListener('change', calculateDateDiff);
-amount_per_day.addEventListener('change', calculateDateDiff);
-
 </script>
+<script src="{{ asset('assets/js/ads-validation.js') }}"></script>

@@ -44,7 +44,7 @@
                                      @elseif(isset($one->cat_id))
                                        <td> {{ $cat_name }}</td>
                                     @else
-                                    <td> - </td>   
+                                    <td>الفروع</td>   
                                     @endif
                                     <td>{{ $one->count }}</td>
                                     <td> {{ \Carbon\Carbon::parse($one->created_at)->format('Y-m-d') }}

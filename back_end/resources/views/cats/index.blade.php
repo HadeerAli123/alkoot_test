@@ -5,7 +5,6 @@
 
 <!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<script src="{{ asset('assets/js/branch-validation.js') }}"></script>
 <style>
 table.dataTable thead th,
 table.dataTable thead td,
@@ -624,101 +623,12 @@ table.dataTable tfoot td {
         </div>
     </div>
 </div>
+<script src="{{ asset('assets/js/branch-validation.js') }}"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    // دالة الفاليديشن الخاصة بالأرقام حسب كود الدولة (نفس اللي في UpdateCategoryRequest)
-    function isValidPhoneByCountry(code, number) {
-        if (!number) return true; // لو فاضي مسموح (لأن الحقل مش مطلوب أساسًا)
-        const regex = {
-            '+966': /^5\d{8}$/,      // السعودية: يبدأ بـ 5 و9 أرقام
-            '+20': /^1\d{9}$/,       // مصر: يبدأ بـ 1 و10 أرقام
-            '+971': /^5\d{8}$/,      // الإمارات: 5 + 8 أرقام
-            '+965': /^[569]\d{7}$/,  // الكويت
-            '+964': /^7\d{9}$/,      // العراق
-            '+962': /^7\d{8}$/,      // الأردن
-            '+963': /^9\d{8}$/,      // سوريا
-            '+968': /^9\d{7}$/,      // عمان
-            '+973': /^3\d{7}$/,      // البحرين
-            '+974': /^3\d{7}$/,      // قطر
-        }[code];
 
-        return regex ? regex.test(number) : /^\d+$/.test(number);
-    }
+    // ========== Edit Forms Validation ==========
+   
 
-    // كل الفورمات اللي تبدأ بـ edit-branch-form-
-    document.querySelectorAll('form[id^="edit-branch-form-"]').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            // مسح الأخطاء القديمة أولاً
-            form.querySelectorAll('.error-text').forEach(el => el.textContent = '');
-            let hasError = false;
-
-            const formId = form.id.split('-').pop(); // id الفرع
-
-            // جلب القيم
-            const whatsappCode = form.querySelector(`#edit-whatsapp-country-code-select-${formId}`)?.value;
-            const whatsappNumber = form.querySelector(`#edit-geex-input-whatsapp-${formId}`)?.value.trim();
-            const phoneCode = form.querySelector(`#edit-phone-country-code-select-${formId}`)?.value;
-            const phoneNumber = form.querySelector(`#edit-geex-input-phone-${formId}`)?.value.trim();
-
-            // فاليديشن واتساب
-            if (whatsappNumber && whatsappCode) {
-                if (!isValidPhoneByCountry(whatsappCode, whatsappNumber)) {
-                    const errSpan = document.getElementById(`whatsapp_error_${formId}`);
-                    if (errSpan) errSpan.textContent = 'رقم الواتساب غير صالح لهذا الكود.';
-                    hasError = true;
-                }
-            }
-
-            // فاليديشن رقم التواصل
-            if (phoneNumber && phoneCode) {
-                if (!isValidPhoneByCountry(phoneCode, phoneNumber)) {
-                    const errSpan = document.getElementById(`phone_error_${formId}`);
-                    if (errSpan) errSpan.textContent = 'رقم التواصل غير صالح لهذا الكود.';
-                    hasError = true;
-                }
-            }
-
-            // لو فيه أي خطأ → نوقف الإرسال
-            if (hasError) {
-                e.preventDefault();
-                return false;
-            }
-
-            // لو مفيش أخطاء → نكمل الإرسال بالـ AJAX (الكود القديم بتاعك)
-            e.preventDefault(); // لسه هنمنع الإرسال العادي عشان نستخدم AJAX
-
-            const formData = new FormData(form);
-            if (!formData.has('_method')) formData.append('_method', 'PUT');
-            if (!formData.has('_token')) formData.append('_token', '{{ csrf_token() }}');
-
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.errors) {
-                    // backend validation errors
-                    for (let key in data.errors) {
-                        const errorSpan = document.getElementById(`${key}_error_${formId}`);
-                        if (errorSpan) errorSpan.textContent = data.errors[key][0];
-                    }
-                } else {
-                 
-                    $(`#projectEditModal_${formId}`).modal('hide');
-                    location.reload();
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('حدث خطأ أثناء الحفظ، حاول مرة أخرى.');
-            });
-        });
-    });
-});
 </script>

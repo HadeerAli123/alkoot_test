@@ -30,6 +30,9 @@ class UpdateCompanyRequest extends FormRequest
             //     'unique:companies,slug,' . $this->route('company'),
             //     'regex:/^[a-zA-Z0-9\-]+$/'
             // ],
+                'logo' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+                'phone' => 'nullable|digits_between:10,15',
+    'description' => 'nullable|string|min:10|max:500',
 
         ];
     }
@@ -44,6 +47,15 @@ class UpdateCompanyRequest extends FormRequest
             // 'slug.regex' => 'يجب ان يكون المعرف باللغة الانجليزية',
             'domain.required' => 'النطاق مطلوب.',
             'domain.exists' => 'النطاق المختار غير موجود.',
+                     'logo.image' => 'الملف يجب أن يكون صورة',
+    'logo.mimes' => 'صيغة الصورة غير مدعومة',
+    'logo.max' => 'حجم الصورة يجب ألا يتجاوز 2 ميجا',
+            'phone.digits_between' => 'رقم الهاتف يجب أن يكون بين 10 و 15 رقم',
+             'description.min' => 'وصف المشروع يجب ألا يقل عن 10 حروف',
+    'description.max' => 'وصف المشروع يجب ألا يزيد عن 500 حرف',
+ 'phone.string' => 'رقم الهاتف لازم يكون نصياً.',
+    'phone.max' => 'رقم الهاتف طويل جداً، الحد الأقصى 20 رقم.',
+
         ];
     }
 }

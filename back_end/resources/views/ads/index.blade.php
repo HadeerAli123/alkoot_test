@@ -7,7 +7,21 @@ table.dataTable thead td,
 table.dataTable tfoot th,
 table.dataTable tfoot td {
     text-align: justify !important;
+
+    
 }
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+.is-valid {
+    border-color: #28a745 !important;
+}
+.error-message {
+    font-size: 0.85rem;
+}
+
+
 </style>
 <div class="row">
     <div class="col-12">
@@ -39,7 +53,7 @@ table.dataTable tfoot td {
                         <div class="modal-content">
                             <!-- Modal Body -->
                             <div class="modal-body">
-                                <form action="{{ route('ads_.store')}}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('ads_.store')}}" method="POST" enctype="multipart/form-data" id="add_ads">
                                     @csrf
                                     <div class="contact-account-setting media-body d-flex justify-content-between align-items-center"
                                         style="background: #e3e4e6; border-radius: 12px; padding-top: 20px; padding-bottom: 15px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
@@ -104,7 +118,7 @@ table.dataTable tfoot td {
                                         <div class="col-lg-6">
                                             <div class="form-group mb-4">
                                                 <label for="number_days" class="mb-2 black bold">هاتف الحملة </label>
-                                                <input type="number" class="theme-input-style" name="phone">
+                                                <input type="number" class="theme-input-style" name="phone" id="phone">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -207,7 +221,7 @@ table.dataTable tfoot td {
     </div>
 </div>
 
-<script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -218,7 +232,7 @@ $(document).ready(function() {
     //     checkData(compId);
     // }
     console.log(compId);
-    var table = $('#all_ads-table').DataTable({
+window.adsTable = $('#all_ads-table').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
@@ -285,36 +299,9 @@ $(document).ready(function() {
     });
 });
 </script>
+
+
 <script>
-const startInput = document.getElementById('start_date');
-const endInput = document.getElementById('end_date');
-const output = document.getElementById('number_days');
-const total_amount = document.getElementById('total_amount');
-const amount_per_day = document.getElementById('amount_per_day');
-
-function calculateDateDiff() {
-    const start = new Date(startInput.value);
-    const end = new Date(endInput.value);
-    const perDayAmount = parseFloat(amount_per_day.value);
-
-    if (!isNaN(start) && !isNaN(end)) {
-        const diffTime = end - start;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        output.value = diffDays;
-        total_amount.value = (diffDays * perDayAmount);
-        // amountPerDay.value = parseFloat(amountPerDay.value).toFixed(3);
-        console.log(total_amount.value);
-    } else {
-        output.value = '';
-    }
-}
-
-startInput.addEventListener('change', calculateDateDiff);
-endInput.addEventListener('change', calculateDateDiff);
-amount_per_day.addEventListener('change', calculateDateDiff);
-</script>
-
-<!-- <script>
 function checkData(comp_id) {
     $.ajax({
         type: 'get',
@@ -401,143 +388,25 @@ function editData(comp_id) {
         }
     });
 }
-</script> -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('add_ads');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    // حساب عدد الأيام والإجمالي تلقائياً
-    const startDate = document.getElementById('start_date');
-    const endDate = document.getElementById('end_date');
-    const amountPerDay = document.getElementById('amount_per_day');
-    const numberDays = document.getElementById('number_days');
-    const totalAmount = document.getElementById('total_amount');
-    
-    function calculateDaysAndTotal() {
-        if (startDate.value && endDate.value) {
-            const start = new Date(startDate.value);
-            const end = new Date(endDate.value);
-            const diffTime = end - start;
-            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            
-            if (days > 0) {
-                numberDays.value = days;
-                
-                if (amountPerDay.value) {
-                    totalAmount.value = days * parseFloat(amountPerDay.value);
-                }
-            } else {
-                numberDays.value = '';
-                totalAmount.value = '';
-            }
+
+/////////////خاص بزرارا بدء الان 
+function startNow(id) {
+    if (!confirm('هل أنت متأكد من بدء الحملة الآن؟')) return;
+
+fetch(`{{ url('ads/start-now') }}/${id}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
         }
-    }
-    
-    startDate.addEventListener('change', calculateDaysAndTotal);
-    endDate.addEventListener('change', calculateDaysAndTotal);
-    amountPerDay.addEventListener('input', calculateDaysAndTotal);
-    
-    // Validation عند الـ Submit
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // مسح الأخطاء القديمة
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-        
-        let isValid = true;
-        let errors = [];
-        
-        // التحقق من اسم الحملة
-        const name = document.getElementById('name');
-        if (!name.value.trim()) {
-            showError(name, 'اسم الحملة مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من تاريخ البدء
-        if (!startDate.value) {
-            showError(startDate, 'تاريخ البدء مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من تاريخ النهاية
-        if (!endDate.value) {
-            showError(endDate, 'تاريخ النهاية مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من أن تاريخ النهاية بعد تاريخ البدء
-        if (startDate.value && endDate.value) {
-            const start = new Date(startDate.value);
-            const end = new Date(endDate.value);
-            
-            if (end < start) {
-                showError(endDate, 'تاريخ النهاية يجب أن يكون بعد تاريخ البدء');
-                isValid = false;
-            }
-        }
-        
-        // التحقق من قيمة الإعلان
-        if (!amountPerDay.value || parseFloat(amountPerDay.value) <= 0) {
-            showError(amountPerDay, 'قيمة الإعلان يجب أن تكون أكبر من صفر');
-            isValid = false;
-        }
-        
-        // التحقق من الفروع (إذا لم يكن cat_id موجود)
-        const catsIds = document.getElementById('cats_ids');
-        if (catsIds && !catsIds.value) {
-            showError(catsIds, 'يجب اختيار فرع واحد على الأقل');
-            isValid = false;
-        }
-        
-        // التحقق من رقم الهاتف (اختياري لكن لو مكتوب لازم يكون صحيح)
-        const phone = document.getElementById('phone');
-        if (phone.value && phone.value.length < 10) {
-            showError(phone, 'رقم الهاتف غير صحيح');
-            isValid = false;
-        }
-        
-        // لو كل حاجة صح
-        if (isValid) {
-            // تعطيل الزرار لمنع الـ Double Submit
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>جاري الحفظ...';
-            
-            // إرسال الـ Form
-            this.submit();
-        } else {
-            // التمرير للخطأ الأول
-            const firstError = document.querySelector('.error-message');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    });
-    
-    // دالة لعرض الأخطاء
-    function showError(element, message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message text-danger mt-1';
-        errorDiv.style.fontSize = '0.875rem';
-        errorDiv.textContent = message;
-        
-        element.classList.add('is-invalid');
-        element.style.borderColor = '#dc3545';
-        element.parentElement.appendChild(errorDiv);
-    }
-    
-    // إزالة الخطأ عند الكتابة
-    const inputs = form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        input.addEventListener('input', function() {
-            this.classList.remove('is-invalid');
-            this.style.borderColor = '';
-            const error = this.parentElement.querySelector('.error-message');
-            if (error) {
-                error.remove();
-            }
-        });
-    });
-});
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) location.reload();
+    })
+    .catch(err => console.error(err));
+}
 </script>
+
+<script src="{{ asset('assets/js/ads-validation.js') }}"></script>

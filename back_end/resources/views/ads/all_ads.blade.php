@@ -313,8 +313,9 @@ $cats = $company ? \App\Models\Category::where('company_id', $company->id)->get(
                                         <div class="d-flex justify-content-center pt-3"
                                             style="padding-bottom: 10px;">
                                             <button type="submit" class="btn btn-primary ml-3">حفظ</button>
-                                            <button type="reset" class="btn btn-secondary"
-                                                data-dismiss="modal">إلغاء</button>
+   <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+
+
                                         </div>
                                     </form>
                                 </div>
@@ -511,32 +512,6 @@ function editData(comp_id) {
     });
 }
 
-const startInput = document.getElementById('start_date');
-const endInput = document.getElementById('end_date');
-const output = document.getElementById('number_days');
-const total_amount = document.getElementById('total_amount');
-const amount_per_day = document.getElementById('amount_per_day');
-
-function calculateDateDiff() {
-    const start = new Date(startInput.value);
-    const end = new Date(endInput.value);
-    const perDayAmount = parseFloat(amount_per_day.value);
-
-    if (!isNaN(start) && !isNaN(end)) {
-        const diffTime = end - start;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        output.value = diffDays;
-        total_amount.value = (diffDays * perDayAmount);
-    } else {
-        output.value = '';
-    }
-}
-
-startInput.addEventListener('change', calculateDateDiff);
-endInput.addEventListener('change', calculateDateDiff);
-amount_per_day.addEventListener('change', calculateDateDiff);
-
-
  
 
 /////////////خاص بزرارا بدء الان 
@@ -558,142 +533,4 @@ fetch(`{{ url('ads/start-now') }}/${id}`, {
     .catch(err => console.error(err));
 }
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('add_ads');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    // حساب عدد الأيام والإجمالي تلقائياً
-    const startDate = document.getElementById('start_date');
-    const endDate = document.getElementById('end_date');
-    const amountPerDay = document.getElementById('amount_per_day');
-    const numberDays = document.getElementById('number_days');
-    const totalAmount = document.getElementById('total_amount');
-    
-    function calculateDaysAndTotal() {
-        if (startDate.value && endDate.value) {
-            const start = new Date(startDate.value);
-            const end = new Date(endDate.value);
-            const diffTime = end - start;
-            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            
-            if (days > 0) {
-                numberDays.value = days;
-                
-                if (amountPerDay.value) {
-                    totalAmount.value = days * parseFloat(amountPerDay.value);
-                }
-            } else {
-                numberDays.value = '';
-                totalAmount.value = '';
-            }
-        }
-    }
-    
-    startDate.addEventListener('change', calculateDaysAndTotal);
-    endDate.addEventListener('change', calculateDaysAndTotal);
-    amountPerDay.addEventListener('input', calculateDaysAndTotal);
-    
-    // Validation عند الـ Submit
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // مسح الأخطاء القديمة
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-        
-        let isValid = true;
-        let errors = [];
-        
-        // التحقق من اسم الحملة
-        const name = document.getElementById('name');
-        if (!name.value.trim()) {
-            showError(name, 'اسم الحملة مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من تاريخ البدء
-        if (!startDate.value) {
-            showError(startDate, 'تاريخ البدء مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من تاريخ النهاية
-        if (!endDate.value) {
-            showError(endDate, 'تاريخ النهاية مطلوب');
-            isValid = false;
-        }
-        
-        // التحقق من أن تاريخ النهاية بعد تاريخ البدء
-        if (startDate.value && endDate.value) {
-            const start = new Date(startDate.value);
-            const end = new Date(endDate.value);
-            
-            if (end < start) {
-                showError(endDate, 'تاريخ النهاية يجب أن يكون بعد تاريخ البدء');
-                isValid = false;
-            }
-        }
-        
-        // التحقق من قيمة الإعلان
-        if (!amountPerDay.value || parseFloat(amountPerDay.value) <= 0) {
-            showError(amountPerDay, 'قيمة الإعلان يجب أن تكون أكبر من صفر');
-            isValid = false;
-        }
-        
-        // التحقق من الفروع (إذا لم يكن cat_id موجود)
-        const catsIds = document.getElementById('cats_ids');
-        if (catsIds && !catsIds.value) {
-            showError(catsIds, 'يجب اختيار فرع واحد على الأقل');
-            isValid = false;
-        }
-        
-        // التحقق من رقم الهاتف (اختياري لكن لو مكتوب لازم يكون صحيح)
-        const phone = document.getElementById('phone');
-        if (phone.value && phone.value.length < 10) {
-            showError(phone, 'رقم الهاتف غير صحيح');
-            isValid = false;
-        }
-        
-        // لو كل حاجة صح
-        if (isValid) {
-            // تعطيل الزرار لمنع الـ Double Submit
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>جاري الحفظ...';
-            
-            // إرسال الـ Form
-            this.submit();
-        } else {
-            // التمرير للخطأ الأول
-            const firstError = document.querySelector('.error-message');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    });
-    
-    // دالة لعرض الأخطاء
-    function showError(element, message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message text-danger mt-1';
-        errorDiv.style.fontSize = '0.875rem';
-        errorDiv.textContent = message;
-        
-        element.classList.add('is-invalid');
-        element.style.borderColor = '#dc3545';
-        element.parentElement.appendChild(errorDiv);
-    }
-    
-    // إزالة الخطأ عند الكتابة
-    const inputs = form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        input.addEventListener('input', function() {
-            this.classList.remove('is-invalid');
-            this.style.borderColor = '';
-            const error = this.parentElement.querySelector('.error-message');
-            if (error) {
-                error.remove();
-            }
-        });
-    });
-});
-</script>
+<script src="{{ asset('assets/js/ads-validation.js') }}"></script>

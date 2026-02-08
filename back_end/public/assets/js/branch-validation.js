@@ -23,6 +23,7 @@ class BranchValidator {
             instagram: this.form.querySelector('[name="instagram"]'),
             google_Map: this.form.querySelector('[name="google_Map"]'),
             google_Map_2: this.form.querySelector('[name="google_Map_2"]'),
+            tiktok: this.form.querySelector('[name="tiktok"]'),
             description: this.form.querySelector('[name="description"]'),
             menu: this.form.querySelector('[name="menu"]'),
             whatsapp_flag: this.form.querySelector('[id*="whatsapp-flag-img"]'),
@@ -62,6 +63,13 @@ class BranchValidator {
         if (src) img.src = src;
     }
 
+    // Validation للأكواد الدولية المسموح بها فقط
+    isValidCountryCode(code) {
+        const validCodes = ['+966', '+20', '+971', '+965', '+964', '+962', '+963', '+968', '+973', '+974'];
+        return validCodes.includes(code);
+    }
+
+    // Validation لصيغة الأرقام حسب كود الدولة (مطابق تمامًا للـ Laravel)
     validatePhoneFormat(code, number) {
         if (!number) return true;
         const patterns = {
@@ -76,98 +84,231 @@ class BranchValidator {
             '+973': /^3\d{7}$/,
             '+974': /^3\d{7}$/
         };
-        return patterns[code] ? patterns[code].test(number) : true;
+        return patterns[code] ? patterns[code].test(number) : /^\d+$/.test(number);
     }
 
     validateName() {
         const val = this.fields.name?.value.trim();
-        if (!val) { this.showError(this.fields.name, 'اسم الفرع مطلوب.'); return false; }
-        if (val.length > 255) { this.showError(this.fields.name, 'اسم الفرع لا يزيد عن 255 حرفًا.'); return false; }
-        this.clearError(this.fields.name); return true;
+        if (!val) { 
+            this.showError(this.fields.name, 'اسم الفرع مطلوب.'); 
+            return false; 
+        }
+        if (val.length > 255) { 
+            this.showError(this.fields.name, 'اسم الفرع لا يزيد عن 255 حرفًا.'); 
+            return false; 
+        }
+        this.clearError(this.fields.name); 
+        return true;
     }
 
     validateWhatsapp() {
         const code = this.fields.whatsapp_code?.value;
         const num = this.fields.whatsapp?.value.trim();
-        if (num && !code) { this.showError(this.fields.whatsapp, 'كود دولة الواتساب مطلوب إذا أدخلت الرقم.'); return false; }
-        if (code && !num) { this.showError(this.fields.whatsapp, 'رقم الواتساب مطلوب إذا اخترت كود الدولة.'); return false; }
-        if (num) {
-            if (!/^\d+$/.test(num)) { this.showError(this.fields.whatsapp, 'رقم الواتساب يجب أن يكون أرقامًا فقط.'); return false; }
-            if (num.length < 7 || num.length > 15) { this.showError(this.fields.whatsapp, 'رقم الواتساب يجب أن يكون بين 7 و15 رقمًا.'); return false; }
-            if (!this.validatePhoneFormat(code, num)) { this.showError(this.fields.whatsapp, 'رقم الواتساب غير صالح لهذا الكود.'); return false; }
+        
+        // required_with validation
+        if (num && !code) { 
+            this.showError(this.fields.whatsapp, 'كود دولة الواتساب مطلوب إذا أدخلت الرقم.'); 
+            return false; 
         }
-        this.clearError(this.fields.whatsapp); return true;
+        if (code && !num) { 
+            this.showError(this.fields.whatsapp, 'رقم الواتساب مطلوب إذا اخترت كود الدولة.'); 
+            return false; 
+        }
+        
+        // التحقق من صحة كود الدولة
+        if (code && !this.isValidCountryCode(code)) {
+            this.showError(this.fields.whatsapp_code, 'كود دولة الواتساب غير صالح.');
+            return false;
+        }
+        
+        if (num) {
+            // numeric validation
+            if (!/^\d+$/.test(num)) { 
+                this.showError(this.fields.whatsapp, 'رقم الواتساب يجب أن يكون أرقامًا فقط.'); 
+                return false; 
+            }
+            // digits_between:7,15 validation
+            if (num.length < 7 || num.length > 15) { 
+                this.showError(this.fields.whatsapp, 'رقم الواتساب يجب أن يكون بين 7 و15 رقمًا.'); 
+                return false; 
+            }
+            // Country-specific format validation
+            if (!this.validatePhoneFormat(code, num)) { 
+                this.showError(this.fields.whatsapp, 'رقم الواتساب غير صالح لهذا الكود.'); 
+                return false; 
+            }
+        }
+        
+        this.clearError(this.fields.whatsapp);
+        this.clearError(this.fields.whatsapp_code);
+        return true;
     }
 
     validatePhone() {
         const code = this.fields.phone_code?.value;
         const num = this.fields.phone?.value.trim();
-        if (num && !code) { this.showError(this.fields.phone, 'كود دولة التواصل مطلوب إذا أدخلت الرقم.'); return false; }
-        if (code && !num) { this.showError(this.fields.phone, 'رقم التواصل مطلوب إذا اخترت كود الدولة.'); return false; }
-        if (num) {
-            if (!/^\d+$/.test(num)) { this.showError(this.fields.phone, 'رقم التواصل يجب أن يكون أرقامًا فقط.'); return false; }
-            if (num.length < 7 || num.length > 15) { this.showError(this.fields.phone, 'رقم التواصل يجب أن يكون بين 7 و15 رقمًا.'); return false; }
-            if (!this.validatePhoneFormat(code, num)) { this.showError(this.fields.phone, 'رقم التواصل غير صالح لهذا الكود.'); return false; }
+        
+        // required_with validation
+        if (num && !code) { 
+            this.showError(this.fields.phone, 'كود دولة التواصل مطلوب إذا أدخلت الرقم.'); 
+            return false; 
         }
-        this.clearError(this.fields.phone); return true;
+        if (code && !num) { 
+            this.showError(this.fields.phone, 'رقم التواصل مطلوب إذا اخترت كود الدولة.'); 
+            return false; 
+        }
+        
+        // التحقق من صحة كود الدولة
+        if (code && !this.isValidCountryCode(code)) {
+            this.showError(this.fields.phone_code, 'كود دولة التواصل غير صالح.');
+            return false;
+        }
+        
+        if (num) {
+            // numeric validation
+            if (!/^\d+$/.test(num)) { 
+                this.showError(this.fields.phone, 'رقم التواصل يجب أن يكون أرقامًا فقط.'); 
+                return false; 
+            }
+            // digits_between:7,15 validation
+            if (num.length < 7 || num.length > 15) { 
+                this.showError(this.fields.phone, 'رقم التواصل يجب أن يكون بين 7 و15 رقمًا.'); 
+                return false; 
+            }
+            // Country-specific format validation
+            if (!this.validatePhoneFormat(code, num)) { 
+                this.showError(this.fields.phone, 'رقم التواصل غير صالح لهذا الكود.'); 
+                return false; 
+            }
+        }
+        
+        this.clearError(this.fields.phone);
+        this.clearError(this.fields.phone_code);
+        return true;
     }
 
-    validateUrl(input, name) {
-        const val = input?.value.trim();
-        if (!val) { this.clearError(input); return true; }
-        const urlRegex = /^https?:\/\/[^\s$.?#].[^\s]*$/;
-        if (!urlRegex.test(val)) { this.showError(input, `${name} غير صالح.`); return false; }
-        this.clearError(input); return true;
+    // Validation للـ Instagram (مطابق للـ regex في Laravel)
+    validateInstagram() {
+        const val = this.fields.instagram?.value.trim();
+        if (!val) { 
+            this.clearError(this.fields.instagram); 
+            return true; 
+        }
+        
+        const instagramRegex = /^https?:\/\/(www\.)?instagram\.com\/.+$/;
+        if (!instagramRegex.test(val)) { 
+            this.showError(this.fields.instagram, 'رابط إنستجرام يجب أن يكون رابطًا صالحًا لموقع Instagram.'); 
+            return false; 
+        }
+        
+        this.clearError(this.fields.instagram); 
+        return true;
+    }
+
+    // Validation للـ Google Maps (مطابق للـ regex في Laravel)
+    validateGoogleMap(field, fieldName) {
+        const val = field?.value.trim();
+        if (!val) { 
+            this.clearError(field); 
+            return true; 
+        }
+        
+        const googleMapRegex = /^https?:\/\/(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+$/;
+        if (!googleMapRegex.test(val)) { 
+            this.showError(field, `${fieldName} يجب أن يكون رابطًا صالحًا لخرائط Google.`); 
+            return false; 
+        }
+        
+        this.clearError(field); 
+        return true;
+    }
+
+    // Validation للـ TikTok (مطابق للـ regex في Laravel)
+    validateTiktok() {
+        const val = this.fields.tiktok?.value.trim();
+        if (!val) { 
+            this.clearError(this.fields.tiktok); 
+            return true; 
+        }
+        
+        const tiktokRegex = /^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com)\/.+$/;
+        if (!tiktokRegex.test(val)) { 
+            this.showError(this.fields.tiktok, 'رابط التيك توك يجب أن يكون رابطًا صالحًا لموقع tiktok.'); 
+            return false; 
+        }
+        
+        this.clearError(this.fields.tiktok); 
+        return true;
     }
 
     validateDescription() {
-        const val = this.fields.description?.value;
-        if (val.length > 1000) { this.showError(this.fields.description, 'الوصف لا يزيد عن 1000 حرف.'); return false; }
-        this.clearError(this.fields.description); return true;
+        const val = this.fields.description?.value || '';
+        if (val.length > 1000) { 
+            this.showError(this.fields.description, 'الوصف لا يزيد عن 1000 حرف.'); 
+            return false; 
+        }
+        this.clearError(this.fields.description); 
+        return true;
     }
 
     validateMenu() {
         const file = this.fields.menu?.files[0];
-        if (!file) { this.clearError(this.fields.menu); return true; }
-        if (file.type !== 'application/pdf') { this.showError(this.fields.menu, 'الملف يجب أن يكون PDF.'); return false; }
-        if (file.size > 5 * 1024 * 1024) { this.showError(this.fields.menu, 'حجم الملف لا يزيد عن 5 ميجابايت.'); return false; }
-        this.clearError(this.fields.menu); return true;
+        if (!file) { 
+            this.clearError(this.fields.menu); 
+            return true; 
+        }
+        if (file.type !== 'application/pdf') { 
+            this.showError(this.fields.menu, 'الملف يجب أن يكون PDF.'); 
+            return false; 
+        }
+        if (file.size > 5 * 1024 * 1024) { 
+            this.showError(this.fields.menu, 'حجم الملف لا يزيد عن 5 ميجابايت.'); 
+            return false; 
+        }
+        this.clearError(this.fields.menu); 
+        return true;
     }
 
     bindEvents() {
         this.fields.name?.addEventListener('input', () => this.validateName());
+        
         this.fields.whatsapp?.addEventListener('input', () => this.validateWhatsapp());
         this.fields.whatsapp_code?.addEventListener('change', () => {
             this.updateFlag(this.fields.whatsapp_code, this.fields.whatsapp_flag);
             this.validateWhatsapp();
         });
+        
         this.fields.phone?.addEventListener('input', () => this.validatePhone());
         this.fields.phone_code?.addEventListener('change', () => {
             this.updateFlag(this.fields.phone_code, this.fields.phone_flag);
             this.validatePhone();
         });
-        this.fields.instagram?.addEventListener('input', () => this.validateUrl(this.fields.instagram, 'رابط إنستجرام'));
-        this.fields.google_Map?.addEventListener('input', () => this.validateUrl(this.fields.google_Map, 'رابط خرائط Google الأول'));
-        this.fields.google_Map_2?.addEventListener('input', () => this.validateUrl(this.fields.google_Map_2, 'رابط خرائط Google الثاني'));
+        
+        this.fields.instagram?.addEventListener('input', () => this.validateInstagram());
+        this.fields.google_Map?.addEventListener('input', () => this.validateGoogleMap(this.fields.google_Map, 'رابط خرائط Google الأول'));
+        this.fields.google_Map_2?.addEventListener('input', () => this.validateGoogleMap(this.fields.google_Map_2, 'رابط خرائط Google الثاني'));
+        this.fields.tiktok?.addEventListener('input', () => this.validateTiktok());
         this.fields.description?.addEventListener('input', () => this.validateDescription());
         this.fields.menu?.addEventListener('change', () => this.validateMenu());
 
         this.form.addEventListener('submit', (e) => {
             let valid = true;
-            [
+            
+            // Validate all required fields
+            const validations = [
                 () => this.validateName(),
                 () => this.validateWhatsapp(),
                 () => this.validatePhone(),
+                () => this.validateInstagram(),
+                () => this.validateGoogleMap(this.fields.google_Map, 'رابط خرائط Google الأول'),
+                () => this.validateGoogleMap(this.fields.google_Map_2, 'رابط خرائط Google الثاني'),
+                () => this.validateTiktok(),
                 () => this.validateDescription(),
                 () => this.validateMenu()
-            ].forEach(fn => { if (!fn()) valid = false; });
-
-            [
-                [this.fields.instagram, 'رابط إنستجرام'],
-                [this.fields.google_Map, 'رابط خرائط Google الأول'],
-                [this.fields.google_Map_2, 'رابط خرائط Google الثاني']
-            ].forEach(([input, name]) => {
-                if (input && !this.validateUrl(input, name)) valid = false;
+            ];
+            
+            validations.forEach(fn => { 
+                if (!fn()) valid = false; 
             });
 
             if (!valid) e.preventDefault();
@@ -229,7 +370,7 @@ function setupAjaxSubmit(form) {
             if (response.ok && result.success) {
                 $(form.closest('.modal')).modal('hide');
                 toastr.success(result.message || 'تم الحفظ بنجاح');
-           window.location.reload();
+                window.location.reload();
             } else {
                 if (result.errors) {
                     Object.keys(result.errors).forEach(field => {

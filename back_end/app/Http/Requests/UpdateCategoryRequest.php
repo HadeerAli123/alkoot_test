@@ -22,24 +22,43 @@ class UpdateCategoryRequest extends FormRequest
  public function rules(): array
     {
         return [
-          'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'company_id' => 'required|integer|exists:companies,id',
             'description' => 'nullable|string|max:1000',
             'whatsapp_country_code' => 'required_with:whatsapp|in:+966,+20,+971,+965,+964,+962,+963,+968,+973,+974',
             'whatsapp' => 'required_with:whatsapp_country_code|numeric|digits_between:7,15',
             'phone_country_code' => 'required_with:phone|in:+966,+20,+971,+965,+964,+962,+963,+968,+973,+974',
             'phone' => 'required_with:phone_country_code|numeric|digits_between:7,15',
-            'instagram' => 'nullable|url|max:255',
-            'google_Map' => 'nullable|url|max:255',
-            'google_Map_2' => 'nullable|url|max:255',
-       
-        ];
+           'instagram' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?instagram\.com\/.+$/'
+    ],
+
+    'google_Map' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+$/'
+    ],
+
+    'google_Map_2' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+$/'
+    ],
+
+    'tiktok' => [
+        'nullable',
+        'regex:/^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com)\/.+$/'
+    ],
+            'menu' => 'nullable|file|mimes:pdf|max:2048', // Max 2MB
+                    ];
+
+    
     }
 
     public function messages(): array
     {
         return [
-           'name.required' => 'اسم الفرع مطلوب.',
+            'name.required' => 'اسم الفرع مطلوب.',
+            'name.string' => 'اسم الفرع يجب أن يكون نصًا.',
             'name.max' => 'اسم الفرع لا يزيد عن 255 حرفًا.',
             'company_id.required' => 'معرف الشركة مطلوب.',
             'company_id.exists' => 'الشركة غير موجودة.',
@@ -52,14 +71,18 @@ class UpdateCategoryRequest extends FormRequest
             'phone_country_code.required_with' => 'كود دولة التواصل مطلوب إذا أدخلت الرقم.',
             'phone_country_code.in' => 'كود دولة التواصل غير صالح.',
             'phone.required_with' => 'رقم التواصل مطلوب إذا اخترت كود الدولة.',
-            'phone.numeric' => 'rرقم التواصل يجب أن يكون أرقامًا فقط.',
+            'phone.numeric' => 'رقم التواصل يجب أن يكون أرقامًا فقط.',
             'phone.digits_between' => 'رقم التواصل يجب أن يكون بين 7 و15 رقمًا.',
-            'instagram.url' => 'رابط إنستجرام غير صالح.',
+                     'instagram.url' => 'رابط إنستجرام غير صالح.',
             'instagram.regex' => 'رابط إنستجرام يجب أن يكون رابطًا صالحًا لموقع Instagram.',
             'google_Map.url' => 'رابط خرائط Google الأول غير صالح.',
             'google_Map.regex' => 'رابط خرائط Google الأول يجب أن يكون رابطًا صالحًا لخرائط Google.',
             'google_Map_2.url' => 'رابط خرائط Google الثاني غير صالح.',
-            'google_Map_2.regex' => 'رابط خرائط Google الثاني يجب أن يكون رابطًا صالحًا لخرائط Google.',
+     'tiktok.url' => 'رابط  التيك توك  غير صالح.',
+            'tiktok.regex' => 'رابط التيك توك  يجب أن يكون رابطًا صالحًا لموقع tiktok.',
+            'menu.file' => 'يجب أن يكون ملفًا.',
+            'menu.mimes' => 'قائمة الطعام يجب أن تكون PDF فقط.',
+            'menu.max' => 'حجم الملف لا يزيد عن 2 ميجا.',
         ];
     }
 

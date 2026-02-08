@@ -30,30 +30,36 @@ class ExcelController extends Controller
         return return_res($data, $compact, \App\Http\Resources\Api\AdsResource::class);
     }
 
-    public function upload(Request $request)
-    {
 
+public function upload(Request $request)
+{
 
-        $request->validate([
-            'file' => 'required|file|max:2048',
-        ], [
-            'file.required' => 'يرجى رفع ملف.',
-            'file.file' => 'الملف غير صالح.',
-            'file.mimes' => 'صيغة الملف يجب أن تكون xlsx أو csv أو xls.',
-            'file.max' => 'حجم الملف يجب ألا يتجاوز 2 ميجابايت.',
-        ]);
+// dd($request->all());
+    $request->validate([
+        'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+    ], [
+        'file.required' => 'يرجى رفع ملف.',
+        'file.file' => 'الملف غير صالح.',
+        'file.mimes' => 'صيغة الملف يجب أن تكون xlsx أو csv أو xls.',
+        'file.max' => 'حجم الملف يجب ألا يتجاوز 2 ميجابايت.',
+    ]);
 
-        if ($request->hasFile('file')) {
-            Excel::import(new ExcelImport, $request->file('file'));
-        } else {
-            return redirect()->back()->withErrors(['file' => 'يرجى رفع ملف صالح.']);
-        }
+    $file = $request->file('file');
 
-        return redirect()->back()->with('success', 'تم الاستيراد  بنجاح!');
-    }
+    // Laravel Excel بيتعرف على النوع تلقائياً
+    Excel::import(new ExcelImport, $file);
+
+    return redirect()->back()->with('success', 'تم الاستيراد بنجاح!');
+}
 
     public function excelExport($id)
     {
         return Excel::download(new AdsExport($id), 'campaign.xlsx');
     }
 }
+
+
+
+
+
+

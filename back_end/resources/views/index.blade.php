@@ -152,8 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <tr>
                                 <th>م</th>
                                 <th>المشروع</th>
-                                <th>الفروع / المنتجات</th>
-                                <th>الحملة</th>
+                                 <th>الحملة</th>
+                                <th>الفرع </th>
                                 <th>الزيارات</th>
                                 <th>الضغطات</th>
                                 <th>التكلفة</th>
@@ -166,22 +166,31 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td>
                                     <a href="{{ route('companies.index') }}">{{ $ad->company?->name }} </a>
                                 </td>
+                              <td>{{ $ad->name}} </td>
+
                                 <td>
-                                    @php
-                                    $selectedProductIds = is_array($ad->cats_ids)
-                                    ? $ad->cats_ids
-                                    : json_decode($ad->cats_ids, true);
+                                @php
+    $selectedProductIds = is_array($ad->cats_ids)
+        ? $ad->cats_ids
+        : json_decode($ad->cats_ids, true);
 
-                                    $selectedProductIds = is_array($selectedProductIds) ?
-                                    $selectedProductIds : [];
+    $selectedProductIds = is_array($selectedProductIds)
+        ? $selectedProductIds
+        : [];
+@endphp
 
-                                    $cats = \App\Models\Category::whereIn('id',
-                                    $selectedProductIds)->get();
-                                    @endphp
+@if(in_array('all', $selectedProductIds))
+    <strong>الكل</strong>
+@else
+    @php
+        $cats = \App\Models\Category::whereIn('id', $selectedProductIds)->get();
+    @endphp
 
-                                    @foreach ($cats as $cat)
-                                       <a href="{{ route('cats.index') }}">{{ $cat->name}}, </a>
-                                    @endforeach
+    @foreach ($cats as $cat)
+        {{ $cat->name }}
+    @endforeach
+@endif
+
                                     <br>
                                     @php
                                     $selectedProductIds = is_array($ad->product_ids)
@@ -191,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     $selectedProductIds = is_array($selectedProductIds) ?
                                     $selectedProductIds : [];
 
+
                                     $products = \App\Models\Product::whereIn('id',
                                     $selectedProductIds)->get();
                                     @endphp
@@ -199,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                       <small>{{ $product->name }}, </small>
                                     @endforeach
                                 </td>
-                                <td>{{ $ad->name}} </td>
                                 <td>{{ $ad->details->where('type','visit')->count() }}</td>
                                 <td>{{ $ad->details->where('type','!=','visit')->count() }}</td>
                                 <td>{{ $ad->total_amount }}</td>

@@ -300,9 +300,9 @@ class AdsRepository implements AdsInterface
     public function destroy($id)
     {
         $ads = Ads::findOrFail($id);
-        $ads->delete();
 
-        $data =  Ads::with('company')->get();
+        $data =  Ads::with('company','details')->get();
+             $ads->delete();
         return $data;
     }
 
